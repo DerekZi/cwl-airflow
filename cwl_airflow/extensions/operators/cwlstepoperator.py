@@ -37,6 +37,9 @@ class CWLStepOperator(BaseOperator):
         post_status(context)
 
         self.job_data = collect_reports(context)         # we need it also in "on_kill"
+
+        ## can i delete the DockerRequirement here?
+        ## but this will be invoked only if we start executing the task
         _, step_report, skipped = execute_workflow_step(
             workflow=context["dag"].workflow,
             task_id=self.task_id,

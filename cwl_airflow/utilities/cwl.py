@@ -653,6 +653,7 @@ def execute_workflow_step(
         _stderr = sys.stderr                               # to trick the logger
         sys.stderr = sys.__stderr__
         step_outputs, step_status = executor(
+            # workflow_data is the process
             workflow_data,
             job_data,
             RuntimeContext(default_cwl_args)
