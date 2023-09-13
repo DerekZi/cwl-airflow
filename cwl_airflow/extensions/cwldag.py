@@ -136,7 +136,7 @@ class CWLDAG(DAG):
                         executor_config["image"] = req["dockerPull"]
                     if req["class"] == "ResourceRequirement":
                         if "ramMin" in req:
-                            executor_config["mem"] = f'{(int(req["ramMin"]) + 1023) // 1024}'
+                            executor_config["mem"] = req["ramMin"]
                         if 'cpuReq' in req:
                             executor_config["cpu"] = req["coresMin"]
                     
@@ -144,7 +144,7 @@ class CWLDAG(DAG):
                 for hint in hints:
                     if hint["class"] == "ResourceRequirement":
                         if "ramMin" in hint:
-                            memReq = max((int(hint["ramMin"] + 1023) // 1024), int(executor_config.get("mem",'2')))
+                            memReq = max(int(hint["ramMin"]), int(executor_config.get("mem",'4096')))
                             executor_config["mem"] = f'{memReq}'
                         if 'coresMin' in hint:
                             cpuReq = max(int(hint["coresMin"]), int(executor_config.get("cpu",'2')))
