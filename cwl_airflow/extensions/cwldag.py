@@ -130,16 +130,18 @@ class CWLDAG(DAG):
             ####### Modified
             executor_config = {}
             run = step_data["run"]
-            for _, req in get_items(run, "requirements"):
-                if req["class"] == "DockerRequirement":
-                    executor_config["image"] = req["dockerPull"]
-                if req["class"] == "ResourceRequirement":
-                    executor_config["cpu"] = req["coresMin"]
-                    executor_config["mem"] = (req["ramMin"] + 1023) // 1024
-            for _, hint in get_items(run, "hints"):
-                if hint["class"] == "ResourceRequirement":
-                    executor_config["cpu"] = max(hint["coresMin"], executor_config.get("cpu",'2'))
-                    executor_config["mem"] = max((hint["ramMin"] + 1023) // 1024, executor_config.get("mem",'2'))
+            for _, reqs in get_items(run, "requirements"):
+                for req in reqs:
+                    if req["class"] == "DockerRequirement":
+                        executor_config["image"] = req["dockerPull"]
+                    if req["class"] == "ResourceRequirement":
+                        executor_config["cpu"] = req["coresMin"]
+                        executor_config["mem"] = (req["ramMin"] + 1023) // 1024
+            for _, hints in get_items(run, "hints"):
+                for hint in hints:
+                    if hint["class"] == "ResourceRequirement":
+                        executor_config["cpu"] = max(hint["coresMin"], executor_config.get("cpu",'2'))
+                        executor_config["mem"] = max((hint["ramMin"] + 1023) // 1024, executor_config.get("mem",'2'))
             ####### Modified
             task_by_id[step_id] = CWLStepOperator(dag=self, task_id=step_id, executor_config=executor_config)
             for step_out_id, _ in get_items(step_data["out"]):
