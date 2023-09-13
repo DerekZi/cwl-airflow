@@ -143,10 +143,10 @@ class CWLDAG(DAG):
             for _, hints in get_items(run, "hints"):
                 for hint in hints:
                     if hint["class"] == "ResourceRequirement":
-                        if "ramMin" in req:
+                        if "ramMin" in hint:
                             memReq = max((int(hint["ramMin"] + 1023) // 1024), int(executor_config.get("mem",'2')))
                             executor_config["mem"] = f'{memReq}'
-                        if 'cpuReq' in req:
+                        if 'cpuReq' in hint:
                             cpuReq = max(int(hint["coresMin"]), int(executor_config.get("cpu",'2')))
                             executor_config["cpu"] = f'{cpuReq}'
             ####### Modified
