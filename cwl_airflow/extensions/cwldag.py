@@ -136,12 +136,15 @@ class CWLDAG(DAG):
                         executor_config["image"] = req["dockerPull"]
                     if req["class"] == "ResourceRequirement":
                         executor_config["cpu"] = req["coresMin"]
-                        executor_config["mem"] = (req["ramMin"] + 1023) // 1024
+                        executor_config["mem"] = f'{(int(req["ramMin"]) + 1023) // 1024}'
+                    
             for _, hints in get_items(run, "hints"):
                 for hint in hints:
                     if hint["class"] == "ResourceRequirement":
-                        executor_config["cpu"] = max(hint["coresMin"], executor_config.get("cpu",'2'))
-                        executor_config["mem"] = max((hint["ramMin"] + 1023) // 1024, executor_config.get("mem",'2'))
+                        cpuReq = max(int(hint["coresMin"]), int(executor_config.get("cpu",'2')))
+                        memReq = max((int(hint["ramMin"] + 1023) // 1024), int(executor_config.get("mem",'2')))
+                        executor_config["cpu"] = f'{cpuReq}'
+                        executor_config["mem"] = f'{memReq}'
             ####### Modified
             task_by_id[step_id] = CWLStepOperator(dag=self, task_id=step_id, executor_config=executor_config)
             for step_out_id, _ in get_items(step_data["out"]):
