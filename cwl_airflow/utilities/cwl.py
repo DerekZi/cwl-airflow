@@ -676,9 +676,9 @@ def execute_workflow_step(
     ## this should remove the workflow docker Requirement
     dockerReq = []
     for req in workflow_data.requirements:
-        _, val = get_items(req, "class")
-        if val == "DockerRequirement":
-            dockerReq.append(req)
+        for _, val in get_items(req, "class"):
+            if val == "DockerRequirement":
+                dockerReq.append(req)
     for req in dockerReq:
         workflow_data.requirements.remove(req)
     
