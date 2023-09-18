@@ -682,13 +682,12 @@ def execute_workflow_step(
     for req in dockerReq:
         workflow_data.requirements.remove(req)
     
-    
-    fast_cwl_step_load(                                # will save new worlflow to "workflow_step_path"
-        workflow=workflow,
-        target_id=task_id,
-        cwl_args=default_cwl_args,
-        location=workflow_step_path,
-        workflow_input=workflow_tool
+    #save and reload the workflow data
+    os.remove(workflow_step_path)
+    dump_json(workflow_tool, workflow_step_path)
+    workflow_data = slow_cwl_load(
+        workflow=workflow_step_path,
+        cwl_args=default_cwl_args
     )
     ######## Modified
     skipped = True
