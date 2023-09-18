@@ -815,7 +815,7 @@ def load_job(
     return initialized_job_data
 
 
-def fast_cwl_step_load(workflow, target_id, cwl_args=None, location=None, workflow_input=None):
+def fast_cwl_step_load(workflow, target_id, cwl_args=None, location=None):
     """
     Returns workflow (CommentedMap) that includes only single step
     selected by "target_id" from the parsed "workflow". Other steps
@@ -846,9 +846,6 @@ def fast_cwl_step_load(workflow, target_id, cwl_args=None, location=None, workfl
         workflow=workflow,
         cwl_args=default_cwl_args
     )
-
-    if workflow_input is not None:
-        workflow_tool = workflow_input
 
     selected_step = list(get_items(workflow_tool["steps"], target_id))[0][1]
 
