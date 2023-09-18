@@ -682,8 +682,15 @@ def execute_workflow_step(
     for req in dockerReq:
         workflow_data.requirements.remove(req)
     
+    
+    fast_cwl_step_load(                                # will save new worlflow to "workflow_step_path"
+        workflow=workflow,
+        target_id=task_id,
+        cwl_args=default_cwl_args,
+        location=workflow_step_path,
+        workflow_input=workflow_tool
+    )
     ######## Modified
-
     skipped = True
     step_outputs = {output_id: None for output_id, _ in get_items(workflow_data.tool["outputs"])}
     if need_to_run(workflow_data, job_data, task_id):
@@ -809,7 +816,7 @@ def load_job(
     return initialized_job_data
 
 
-def fast_cwl_step_load(workflow, target_id, cwl_args=None, location=None):
+def fast_cwl_step_load(workflow, target_id, cwl_args=None, location=None, workflow_input=None):
     """
     Returns workflow (CommentedMap) that includes only single step
     selected by "target_id" from the parsed "workflow". Other steps
@@ -840,6 +847,9 @@ def fast_cwl_step_load(workflow, target_id, cwl_args=None, location=None):
         workflow=workflow,
         cwl_args=default_cwl_args
     )
+
+    if workflow_input is not None:
+        workflow_tool = workflow_input
 
     selected_step = list(get_items(workflow_tool["steps"], target_id))[0][1]
 
