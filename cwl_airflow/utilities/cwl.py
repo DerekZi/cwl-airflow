@@ -781,7 +781,6 @@ def load_job(
     
     default_cwl_args = get_default_cwl_args(cwl_args)
     cwd = default_cwl_args["inputs_folder"] if cwd is None else cwd
-    print()
     loading_context = setup_loadingContext(
         LoadingContext(default_cwl_args),
         RuntimeContext(default_cwl_args),
